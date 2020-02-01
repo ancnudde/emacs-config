@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: node
+# key: node
+# --
+\node[shape=$1, draw=$2] ($3) at ($4,$5) {6};
