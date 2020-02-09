@@ -3,13 +3,14 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
+(add-to-list 'load-path "/home/anthony/Documents/Emacs_lib")
+
 (require 'package)
 
 ;; Internet repositories for new packages.
 (setq package-archives '(("org"       . "http://orgmode.org/elpa/")
                          ("gnu"       . "http://elpa.gnu.org/packages/")
-                         ("melpa"     . "http://melpa.org/packages/")
-                         ("melpa-stable" . "http://stable.melpa.org/packages/")))
+                         ("melpa"     . "http://melpa.org/packages/")))
 
  
 
@@ -33,7 +34,8 @@
     pdf-tools
     auctex
     irony
-    company-irony))
+    company-irony
+    company-c-headers))
 
 (mapc #'(lambda (package)
     (unless (package-installed-p package)
@@ -52,11 +54,16 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-view-program-list (quote ((output-pdf "PDF Tools"))) t)
+ '(TeX-view-program-list (quote ((output-pdf "PDF Tools"))))
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
    (vector "#212121" "#B71C1C" "#558b2f" "#FFA000" "#2196f3" "#4527A0" "#00796b" "#FAFAFA"))
+ '(company-backends
+   (quote
+    (company-irony company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-ropemacs company-cmake company-capf
+		   (company-dabbrev-code company-gtags company-etags company-keywords)
+		   company-oddmuse company-files company-dabbrev)))
  '(custom-enabled-themes (quote (material)))
  '(custom-safe-themes
    (quote
@@ -69,7 +76,7 @@
  '(initial-frame-alist (quote ((fullscreen . maximized))))
  '(package-selected-packages
    (quote
-    (company-irony-c-headers company-irony imenu-list swiper auctex helm neotree yasnippet-snippets yasnippet company-c-headers fill-column-indicator sr-speedbar company-jedi ess poly-R autopair flycheck py-autopep8 elpy pdf-tools material-theme better-defaults)))
+    (latex-preview-pane auto-yasnippet company-irony-c-headers company-irony imenu-list swiper auctex helm neotree yasnippet-snippets yasnippet company-c-headers fill-column-indicator sr-speedbar company-jedi ess poly-R autopair flycheck py-autopep8 elpy pdf-tools material-theme better-defaults)))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -132,12 +139,13 @@
 ;; Shortcuts
 (global-set-key (kbd "M-0") 'indent-rigidly) ;; Indentation
 
-
+;; C++ autocomplete
 (defun my-c++-mode-hook ()
   (irony-mode))
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
+
 
 (setq-default
  whitespace-line-column 80
@@ -246,3 +254,4 @@
 
 (setq display-buffer-alist '((".*\\*shell\\*.*" display-buffer-same-window (nil))))
 
+(require 'draw_in_latex)
