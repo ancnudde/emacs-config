@@ -1,0 +1,44 @@
+#-*- mode: org -*-
+#+STARTUP: showall
+
+#+TITLE Python mode configuration
+
+* Loading packages
+
+#+begin_src emacs-lisp
+
+(defvar myPackages'(elpy 
+                    py-autopep8 
+                    jedi 
+                    flycheck
+                    company-jedi))
+
+(mapc #'(lambda (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+      myPackages)
+
+#+end_src
+
+* Setup elpy
+
+#+begin_src emacs-lisp
+
+(elpy-enable)
+
+;; Setup interpreters
+(setq elpy-rpc-python-command "python3")
+(setq python-shell-interpreter "python3")
+(setq pyvenv-activate "/home/ancnudde/anaconda3/envs/myenv")
+(setq elpy-rpc-virtualenv-path "/home/ancnudde/anaconda3/envs/myenv")
+
+;; Format code on save
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+;; Code checking
+(add-hook 'elpy-mode-hook 'flycheck-mode)
+
+;; Autocomplete
+(add-hook 'elpy-mode-hook 'company-mode)
+
+#+end_src

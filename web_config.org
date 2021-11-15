@@ -1,0 +1,82 @@
+#-*- mode: org -*-
+#+STARTUP: showall
+
+#+TITLE General configuration
+
+* Loading packages
+
+#+begin_src emacs-lisp
+
+  (defvar myPackages'(rjsx-mode
+		      web-mode
+		      lsp-mode))
+
+  (mapc #'(lambda (package)
+	    (unless (package-installed-p package)
+	      (package-install package)))
+	myPackages)
+
+#+end_src
+
+* Setup 
+
+Attach web mode to HTML ans CSS files and RJSX mode to Javascript
+
+#+begin_src emacs-lisp
+
+  ;; LSP for autocomplete
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css?\\'" . css-mode))
+  (add-to-list 'auto-mode-alist '("\\.js?\\'" . rjsx-mode))
+
+#+end_src
+
+
+Setup for javascript.
+
+#+begin_src emacs-lisp
+
+
+  (add-hook 'rjsx-mode-hook 'lsp)
+  (setq lsp-log-io nil)
+  (setq gc-cons-threshold 100000000)
+  (setq lsp-enable-file-watchers nil)
+  (setq read-process-output-max (* 1024 1024))
+
+#+end_src
+
+Redefine indentation and highlights for web mode
+
+#+begin_src emacs-lisp
+
+  ;; Indentation
+  (defun my-web-mode-hook ()
+    "Hooks for Web mode."
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq tab-width 2)
+    (set (make-local-variable 'company-backends)
+	 '(company-capf company-yasnippet company-files)
+	 )
+    )
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+  (add-hook 'web-mode-hook 'company-mode)
+  (add-hook 'css-mode-hook 'my-web-mode-hook)
+  (add-hook 'css-mode-hook 'company-mode)
+  (defun my-js-mode-hook ()
+    "Hooks for Web mode."
+    (setq web-mode-markup-indent-offset 4)
+    (setq web-mode-code-indent-offset 4)
+    (setq tab-width 4)
+    (set (make-local-variable 'company-backends)
+	 '(company-capf company-web-html company-yasnippet company-files)
+	 )
+    )
+  (add-hook 'rjsx-mode-hook 'my-js-mode-hook)
+  (add-hook 'rjsx-mode-hook 'company-mode)
+  (setq web-mode-enable-current-column-highlight t)
+  (setq web-mode-enable-current-element-highlight t)
+
+#+end_src
+

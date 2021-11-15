@@ -1,0 +1,51 @@
+#-*- mode: org -*-
+#+STARTUP: showall
+
+#+TITLE Programming mode configuration
+
+* Loading packages
+
+#+begin_src emacs-lisp
+
+  (defvar myPackages'(fic-mode
+		      company))
+
+  (mapc #'(lambda (package)
+	    (unless (package-installed-p package)
+	      (package-install package)))
+	myPackages)
+
+#+end_src
+
+* Setup 
+
+#+begin_src emacs-lisp
+
+  ;; Shows line number
+  (add-hook 'prog-mode-hook 'linum-mode)
+
+  ;; Highlight matching parenthesis and parenthesis closing
+  (add-hook 'prog-mode-hook 'show-paren-mode)
+  (add-hook 'prog-mode-hook 'electric-pair-mode)
+
+  ;; Highlight TODO, FIXME, ... in any programming mode
+  (add-hook 'prog-mode-hook 'fic-mode 1)
+
+  ;; Company setup with fci bug fix
+  (add-hook 'after-init-hook 'global-company-mode)
+  (defvar-local company-fci-mode-on-p nil)
+
+  (defun company-turn-off-fci (&rest ignore)
+    (when (boundp 'fci-mode)
+      (setq company-fci-mode-on-p fci-mode)
+      (when fci-mode (fci-mode -1))))
+
+  (defun company-maybe-turn-on-fci (&rest ignore)
+    (when company-fci-mode-on-p (fci-mode 1)))
+
+  (add-hook 'company-completion-started-hook 'company-turn-off-fci)
+  (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
+  (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
+
+
+#+end_src

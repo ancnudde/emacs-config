@@ -1,0 +1,85 @@
+#-*- mode: org -*-
+#+STARTUP: showall
+
+#+TITLE General configuration
+
+* Loading packages
+
+#+begin_src emacs-lisp
+
+(defvar myPackages'(better-defaults
+                    yasnippet-snippets
+                    fill-column-indicator))
+
+(mapc #'(lambda (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+      myPackages)
+
+#+end_src
+
+* Setup 
+
+GUI improvements
+
+#+begin_src emacs-lisp
+
+  ;; CChange font size
+  (set-face-attribute 'default nil :height 120)
+
+  ;; limit line length and highlight overflowing lines
+  (setq whitespace-line-column 80) 
+  (setq whitespace-style '(face lines-tail))
+  (global-whitespace-mode 1)
+  ;; Shows guide for column limit
+  (add-hook 'prog-mode-hook 'fci-mode)
+  (setq fci-rule-column 80)
+  (setq fci-rule-width 1)
+  (setq fci-rule-use-dashes t)
+
+  ;; Removes unnecessary bars in GUI
+  (menu-bar-mode -1)
+  (toggle-scroll-bar -1)
+  (tool-bar-mode -1) 
+
+  ;; Activates yasnippet 
+  (yas-global-mode 1)
+
+  ;; Force shell to open in current window
+  (setq display-buffer-alist '(
+      (".*\\*shell\\*.*" display-buffer-same-window (nil))
+  ))
+
+#+end_src
+
+Removes unnecessary buffers
+
+#+begin_src emacs-lisp
+
+;; hide the startup message
+(setq inhibit-startup-message t)
+
+;; Forces the messages to 0, and kills the *Messages* buffer
+(setq-default message-log-max nil)
+(kill-buffer "*Messages*")
+
+;; Disabled *Completions*
+(add-hook 'minibuffer-exit-hook 
+      '(lambda ()
+         (let ((buffer "*Completions*"))
+           (and (get-buffer buffer)
+            (kill-buffer buffer)))))
+
+
+#+end_src
+
+Adds global shortcuts
+
+#+begin_src emacs-lisp
+
+;; Indentation of text regions
+(global-set-key (kbd "M-0") 'indent-rigidly)
+
+#+end_src
+
+
